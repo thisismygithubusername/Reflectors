@@ -2,7 +2,7 @@
 {
     public interface ITestEnvironment
     {
-        void Setup(object testFixture);
-        void TearDown(object testFixture);
+        void Setup(object tf);
+        void TearDown(object tf);
     }
 }

@@ -12,21 +12,21 @@ namespace ClassLibrary1.Reflectors
     /*
      * Create an Environment class that runs
      * setup / teardown 
-     * 
-     * 
      */
-    public class V2Environment : EnvironmentReflector, ITestEnvironment
+    public class V2Environment : ITestEnvironment
     {
         //Use BaseReflector to get intacne find test setup and test tear down atrributes. 
 
         public void Setup(object fixtureinstance)
         {
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
+            Console.Write("BLAH");
         }
 
         public void TearDown(object fixtureInstance)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            Console.Write("BLAH");
         }
 
     }

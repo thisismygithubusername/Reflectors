@@ -1,10 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using ClassLibrary1.ReflectiveTestRunner.Reflectors;
 using ClassLibrary1.ReflectiveTestRunner.TestModules.@abstract;
 using ClassLibrary1.Reflectors;
 
 namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 {
-    public class TestReflector<T> where T : ITestEnvironment, new()
+    public class TestReflector<T> where T : ITestEnvironment, new() 
     {
         public TestReflector(ITest test, Assembly assembly) 
         {
@@ -15,29 +19,51 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         public Assembly EnvironmentAssembly { get; set; }
 
-        private object TestFixtureInstance { get; set; }
-
         public ITest Test { get; set; }
 
         public T TestEnvironment { get; set; } 
 
-        public ITestRun Run()
+        public TestRun Run()
         {
-            return InvokeTest();
+            return TryRunTest();
         }
 
-        private ITestRun InvokeTest()
+        private object TestFixtureInstance
+        {
+            get; set;
+        }
+
+        private TestRun TryRunTest()
         {
             CreateTestFixtureInstance();
-            TestEnvironment.Setup(TestFixtureInstance);
-            TryRunTest();
-            TestEnvironment.TearDown(TestFixtureInstance);
-            return new TestRun(true);
+            Tuple<string, Exception> testResults = null;
+            var sb = new StringBuilder();
+
+            using (var writer = new StringWriter(sb))
+            {
+                Console.SetOut(writer);
+                TestEnvironment.Setup(TestFixtureInstance);
+                testResults = InvokeTest();
+                TestEnvironment.TearDown(TestFixtureInstance);
+            }
+            var output = sb.ToString();
+            return new TestRun(Test, output, testResults);
         }
 
-        private void TryRunTest()
+        private Tuple<string, Exception> InvokeTest()
         {
-            BaseReflector.ExecuteInstanceMethodFromInstance(TestFixtureInstance, Test.TestName);
+            string status = "success";
+            Exception failureException = null;
+            try
+            {
+                BaseReflector.ExecuteInstanceMethodFromInstance(TestFixtureInstance, Test.TestName);
+            }
+            catch (Exception e)
+            {
+                failureException = e;
+                status = "failure";
+            }
+            return new Tuple<string, Exception>(status, failureException);
         }
 
         private void CreateTestFixtureInstance()

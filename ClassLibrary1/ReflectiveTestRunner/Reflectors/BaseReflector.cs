@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ClassLibrary1.Reflectors
+namespace ClassLibrary1.ReflectiveTestRunner.Reflectors
 {
     public abstract class BaseReflector 
     {
