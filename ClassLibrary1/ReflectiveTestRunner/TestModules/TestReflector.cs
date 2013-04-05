@@ -15,44 +15,76 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             Test = test;
             EnvironmentAssembly = assembly;
             TestEnvironment = new T();
+            StdOutReference = Console.Out;
+            TestOuputHijacker = new StringWriter();
         }
 
-        public Assembly EnvironmentAssembly { get; set; }
+        public Assembly EnvironmentAssembly
+        {
+            get; set;
+        }
 
-        public ITest Test { get; set; }
+        public ITest Test
+        {
+            get; set;
+        }
 
-        public T TestEnvironment { get; set; } 
+        public T TestEnvironment
+        {
+            get; private set;
+        }
 
         public TestRun Run()
         {
             return TryRunTest();
         }
 
-        private object TestFixtureInstance
-        {
-            get; set;
-        }
-
         private TestRun TryRunTest()
         {
-            CreateTestFixtureInstance();
-            Tuple<string, Exception> testResults = null;
-            var sb = new StringBuilder();
-
-            using (var writer = new StringWriter(sb))
-            {
-                Console.SetOut(writer);
-                TestEnvironment.Setup(TestFixtureInstance);
-                testResults = InvokeTest();
-                TestEnvironment.TearDown(TestFixtureInstance);
-            }
-            var output = sb.ToString();
-            return new TestRun(Test, output, testResults);
+            return CreateTestFixtureInstance()
+                .RedirectOutputToHijacker()
+                .RunEnvironmentSetup()
+                .InvokeTest()
+                .RunEnvironmentTearDown()
+                .RedirectOutputToConsole()
+                .PackageTestRun();
         }
 
-        private Tuple<string, Exception> InvokeTest()
+        private TestReflector<T> RedirectOutputToHijacker()
         {
-            string status = "success";
+            Console.SetOut(TestOuputHijacker);
+            return this;
+        }
+
+        private TestReflector<T> RedirectOutputToConsole()
+        {
+            HijackedTestOutput = TestOuputHijacker.ToString();
+            TestOuputHijacker.Close();
+            Console.SetOut(StdOutReference);
+            return this;
+        } 
+
+        private TestReflector<T> CreateTestFixtureInstance()
+        {
+            TestFixtureInstance = EnvironmentReflector.CreateTestFixtureInstanceWithActivator(EnvironmentAssembly, Test.FixtureName);
+            return this;
+        }
+
+        private TestReflector<T> RunEnvironmentSetup()
+        {
+            TestEnvironment.Setup(TestFixtureInstance);
+            return this;
+        }
+
+        private TestReflector<T> RunEnvironmentTearDown()
+        {
+            TestEnvironment.TearDown(TestFixtureInstance);
+            return this;
+        }
+
+        private TestReflector<T> InvokeTest()
+        {
+            string status = Success;
             Exception failureException = null;
             try
             {
@@ -60,17 +92,25 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             }
             catch (Exception e)
             {
-                failureException = e;
-                status = "failure";
+               failureException = e;
+               status = Failure;
             }
-            return new Tuple<string, Exception>(status, failureException);
+            PostTestInfo = new Tuple<string, Exception>(status, failureException);
+            return this;
         }
 
-        private void CreateTestFixtureInstance()
+        private TestRun PackageTestRun()
         {
-            TestFixtureInstance = EnvironmentReflector.CreateTestFixtureInstance(EnvironmentAssembly, Test.FixtureName);
+            return new TestRun(Test, HijackedTestOutput, PostTestInfo);
         }
 
-        
+        private object TestFixtureInstance { get; set; }
+        private Tuple<string, Exception> PostTestInfo { get; set; }
+        private string HijackedTestOutput { get; set; }
+        private TextWriter StdOutReference { get; set; }
+        private TextWriter TestOuputHijacker  { get; set;}
+        private const string Success = "success";
+        private const string Failure = "failure";
+
     }
 }

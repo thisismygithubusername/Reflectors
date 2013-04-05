@@ -1,6 +1,6 @@
 ﻿using ClassLibrary1.ReflectiveTestRunner.TestModules.@abstract;
 
-namespace ClassLibrary1.V2TestRunner
+namespace ClassLibrary1.MindBodyTestRunners
 {
     class MindBodyTest : ITest
     {

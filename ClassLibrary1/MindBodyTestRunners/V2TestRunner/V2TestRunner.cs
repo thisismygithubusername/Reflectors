@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using ClassLibrary1.ReflectiveTestRunner.TestModules;
 using ClassLibrary1.Reflectors;
-using ClassLibrary1.V2TestRunner;
 
 namespace ClassLibrary1.MindBodyTestRunners.V2TestRunner
 {

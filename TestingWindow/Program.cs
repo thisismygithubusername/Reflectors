@@ -11,7 +11,8 @@ namespace TestingWindow
     {
         static void Main(string[] args)
         {
-            new ApiTestRunner().RunCheckScheduleItems();
+            new ApiTestRunner().RunAPITestAndV1Test();
+            Console.ReadLine();
         }
     }
 }

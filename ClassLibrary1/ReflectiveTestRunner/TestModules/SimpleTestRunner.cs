@@ -60,7 +60,7 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private void RunAllTests()
         {
-            foreach (var test in _testsToRun)
+            while (TestsToRun.Count > 0)
             {
                 TestsRan.Add(new TestReflector<T>(_testsToRun.Dequeue(), CurrentAssembly).Run()); 
             }
