@@ -14,9 +14,10 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
         {
             Test = test;
             EnvironmentAssembly = assembly;
-            TestEnvironment = new T();
             StdOutReference = Console.Out;
             TestOuputHijacker = new StringWriter();
+            SetupHijacker = new StringWriter();
+            TearDownHijacker = new StringWriter();
         }
 
         public Assembly EnvironmentAssembly
@@ -41,24 +42,41 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private TestRun TryRunTest()
         {
-            return CreateTestFixtureInstance()
-                .RedirectOutputToHijacker()
+            return RedirectOutputToSetupHijacker()
+                .CreateTestFixtureInstance()
                 .RunEnvironmentSetup()
+                .LogSetupOutput()
+                .RedirectOutputToTestHijacker()
                 .InvokeTest()
+                .LogTestOutput()
+                .RedirectOutputToTearDownHijacker()
                 .RunEnvironmentTearDown()
+                .LogTearDownOutput()
                 .RedirectOutputToConsole()
                 .PackageTestRun();
         }
+       
 
-        private TestReflector<T> RedirectOutputToHijacker()
+        private TestReflector<T> RedirectOutputToTestHijacker()
         {
             Console.SetOut(TestOuputHijacker);
             return this;
         }
 
+        private TestReflector<T> RedirectOutputToSetupHijacker()
+        {
+            Console.SetOut(SetupHijacker);
+            return this;
+        }
+
+        private TestReflector<T> RedirectOutputToTearDownHijacker()
+        {
+            Console.SetOut(TearDownHijacker);
+            return this;
+        }
+
         private TestReflector<T> RedirectOutputToConsole()
         {
-            HijackedTestOutput = TestOuputHijacker.ToString();
             TestOuputHijacker.Close();
             Console.SetOut(StdOutReference);
             return this;
@@ -66,12 +84,13 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private TestReflector<T> CreateTestFixtureInstance()
         {
-            TestFixtureInstance = EnvironmentReflector.CreateTestFixtureInstanceWithActivator(EnvironmentAssembly, Test.FixtureName);
+            TestFixtureInstance = EnvironmentReflector.CreateTestFixtureInstanceWithAppdomain(AppDomain.CurrentDomain, EnvironmentAssembly, Test.FixtureName);
             return this;
         }
 
         private TestReflector<T> RunEnvironmentSetup()
         {
+            TestEnvironment = new T();
             TestEnvironment.Setup(TestFixtureInstance);
             return this;
         }
@@ -79,6 +98,27 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
         private TestReflector<T> RunEnvironmentTearDown()
         {
             TestEnvironment.TearDown(TestFixtureInstance);
+            return this;
+        }
+
+        private TestReflector<T> LogSetupOutput()
+        {
+            StolenSetupOutput = SetupHijacker.ToString();
+            TestOuputHijacker.Close();
+            return this;
+        }
+
+        private TestReflector<T> LogTestOutput()
+        {
+            StolenTestOutput = TestOuputHijacker.ToString();
+            TestOuputHijacker.Close();
+            return this;
+        } 
+
+        private TestReflector<T> LogTearDownOutput()
+        {
+            StolenTearDownOutput = TearDownHijacker.ToString();
+            TestOuputHijacker.Flush();
             return this;
         }
 
@@ -92,7 +132,7 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             }
             catch (Exception e)
             {
-               failureException = e;
+               failureException = e.InnerException;
                status = Failure;
             }
             PostTestInfo = new Tuple<string, Exception>(status, failureException);
@@ -101,14 +141,31 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private TestRun PackageTestRun()
         {
-            return new TestRun(Test, HijackedTestOutput, PostTestInfo);
+            return new TestRun
+                {
+                    Test = this.Test,
+                    Status = PostTestInfo.Item1,
+                    TestOutput = StolenTestOutput,
+                    SetupOutput = StolenSetupOutput,
+                    TearDowmOutput = StolenTearDownOutput,
+                    Exception = PostTestInfo.Item2
+                };
+        }
+
+        private void LoadInstanceTypes()
+        {
+            EnvironmentReflector.CreateTestFixtureInstanceWithAppdomain(AppDomain.CurrentDomain, EnvironmentAssembly, Test.FixtureName);
         }
 
         private object TestFixtureInstance { get; set; }
         private Tuple<string, Exception> PostTestInfo { get; set; }
-        private string HijackedTestOutput { get; set; }
+        private string StolenTestOutput { get; set; }
+        private string StolenSetupOutput { get; set; }
+        private string StolenTearDownOutput { get; set; }
         private TextWriter StdOutReference { get; set; }
         private TextWriter TestOuputHijacker  { get; set;}
+        private TextWriter SetupHijacker { get; set; }
+        private TextWriter TearDownHijacker { get; set; }
         private const string Success = "success";
         private const string Failure = "failure";
 

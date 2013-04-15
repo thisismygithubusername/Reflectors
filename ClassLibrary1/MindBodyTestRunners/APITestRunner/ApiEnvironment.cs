@@ -19,5 +19,6 @@ namespace ClassLibrary1.MindBodyTestRunners.APITestRunner
             //
         }
 
+        public object FixtureInstance { get; set; }
     }
 }

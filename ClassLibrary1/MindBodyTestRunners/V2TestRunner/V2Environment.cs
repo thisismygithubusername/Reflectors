@@ -29,5 +29,6 @@ namespace ClassLibrary1.Reflectors
             Console.Write("BLAH");
         }
 
+        public object FixtureInstance { get; set; }
     }
 }
