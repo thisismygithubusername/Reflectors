@@ -10,6 +10,9 @@ namespace ClassLibrary1.ReflectiveTestRunner
 {
     public class AssemblySniffer
     {
+        private const string Dll = ".dll";
+        private string AssemblyPath { get; set; }
+
         public AssemblySniffer(string assemblyPath)
         {
             AssemblyPath = assemblyPath;
@@ -159,9 +162,6 @@ namespace ClassLibrary1.ReflectiveTestRunner
                 Console.WriteLine();
             }
         }
-
-        private const string Dll = ".dll";
-        private string AssemblyPath { get; set; }
 
     }
 }
