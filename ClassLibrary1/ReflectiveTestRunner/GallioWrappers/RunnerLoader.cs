@@ -15,17 +15,17 @@ namespace ClassLibrary1.ReflectiveTestRunner.GallioWrappers
             AllTestsToRun = new Dictionary<string, List<string>>();    
         }
 
-        public void LoadTest(string fixture, string test )
+        public Dictionary<string, List<string>> DictOfTests
+        {
+            get { return AllTestsToRun; }
+        }
+
+        public void LoadTestToDictonary(string fixture, string test )
         {
             LoadSingleTest(fixture, test);
         }
 
-        public Dictionary<string, List<string>> DictOfTests
-        {
-            get { return AllTestsToRun; }
-        }  
-
-        public void LoadTests(string fixture, List<string> tests)
+        public void LoadTestsToDictonary(string fixture, List<string> tests)
         {
             LoadMultipleTests(fixture, tests);
         }

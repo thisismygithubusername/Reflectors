@@ -96,7 +96,7 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private void ExecuteAllTests()
         {
-            GallioTestRunner.RunTest(DirectoryPath);
+            new GallioTestRunner().RunTest(DirectoryPath);
         }
 
         private void AddTestsToQueue(IEnumerable<ITest> tests)
