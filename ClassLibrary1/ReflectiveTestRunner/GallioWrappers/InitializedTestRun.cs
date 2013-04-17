@@ -8,5 +8,10 @@ namespace ClassLibrary1.ReflectiveTestRunner.GallioWrappers
 {
     class InitializedTestRun
     {
+        public string FixtureName { get; set; }
+
+        public List<string> TestsToRun { get; set; }
+ 
+
     }
 }
