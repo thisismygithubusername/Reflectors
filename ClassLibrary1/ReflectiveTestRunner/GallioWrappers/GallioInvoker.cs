@@ -5,12 +5,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ClassLibrary1.ReflectiveTestRunner.GallioWrappers;
 using Gallio.Framework.Utilities;
 using Gallio.Model;
+using Gallio.Model.Filters;
 using Gallio.Model.Isolation;
 using Gallio.Model.Schema;
 using Gallio.Runner;
 using Gallio.Runner.Projects;
+using Gallio.Runner.Projects.Schema;
 using Gallio.Runner.Reports.Schema;
 using Gallio.Runtime;
 using Gallio.Runtime.ConsoleSupport;
@@ -31,7 +34,7 @@ namespace ClassLibrary1.ReflectiveTestRunner
 
         public GallioTestRunner GallioRunner
         {
-            get { return new GallioTestRunner();}
+            get { return new GallioTestRunner("");}
         }
 
     }
@@ -40,28 +43,61 @@ namespace ClassLibrary1.ReflectiveTestRunner
     {
         private const string GallioDirectory = @"C:\Program Files\Gallio\bin\";
 
-        public void RunTest(string assemblyLoacation)
+
+        public GallioTestRunner(string assemblyLocation)
         {
-            RunIt(assemblyLoacation);
+            AssemblyLocation = assemblyLocation;
+            InitRunner();
         }
 
-        private void RunIt(string assemblyLoacation)
+        public RuntimeSetup Setup
         {
-            var launcher = GetInitializedTestLancher(GetInitSetup(), GetLogger());
-            launcher.AddFilePattern(assemblyLoacation);
-            launcher.Run();
+            get; set;
         }
 
-        private TestLauncher GetInitializedTestLancher(RuntimeSetup setup, ILogger logger)
+        public string AssemblyLocation
         {
-            RuntimeBootstrap.Initialize(setup, logger);
-            return  new TestLauncher
-            {
-                Logger = logger,
-                ProgressMonitorProvider = NullProgressMonitorProvider.Instance,
-                RuntimeSetup = setup,
-                TestProject = { TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local }
-            };
+            get; private set;
+        }
+
+        public TestLauncher Launcher
+        {
+            get; private set;
+        }
+
+        public ILogger Logger
+        {
+            get; set;
+        }
+
+        public void RunTest()
+        {
+            RunIt();
+        }
+
+        public void RunSingleTest( string testName)
+        {
+            RunDat(testName);
+        }
+
+        private void RunIt()
+        {
+            //Launcher.AddFilePattern(AssemblyLocation);
+            Launcher.Run();
+        }
+
+        private void RunDat(string testName)
+        {
+            AddTestFilter(testName);
+            Launcher.Run();
+            Launcher.TestProject.ClearTestFilters();
+        }
+
+        private void AddTestFilter(string testName)
+        {
+            var filters = FilterUtils.ParseTestFilterSet(
+                new GallioFilterGenerator().GenerateSpecificTestsFilter(new List<string> {testName}));
+            Launcher.TestProject.AddTestFilter(new FilterInfo("Member: ", testName));
         }
 
         private RuntimeSetup GetInitSetup( )
@@ -71,10 +107,34 @@ namespace ClassLibrary1.ReflectiveTestRunner
             return setup;
         }
 
-
         private static ILogger GetLogger()
         {
             return (ILogger)new RichConsoleLogger(NativeConsole.Instance); 
+        }
+
+        private TestLauncher GetInitializedTestLancher()
+        {
+            return new TestLauncher
+            {
+                Logger = Logger,
+                ProgressMonitorProvider = NullProgressMonitorProvider.Instance,
+                RuntimeSetup = Setup,
+                TestProject = { TestRunnerFactoryName = StandardTestRunnerFactoryNames.Local }
+            };
+        }
+
+        private void InitializeRuntimeBootStrap()
+        {
+            RuntimeBootstrap.Initialize(Setup, Logger);
+        }
+
+        private void InitRunner()
+        {
+            Setup = GetInitSetup();
+            Logger = GetLogger();
+            Launcher = GetInitializedTestLancher();
+            Launcher.AddFilePattern(AssemblyLocation);
+            InitializeRuntimeBootStrap();
         }
 
         private TestPackage TesPackage

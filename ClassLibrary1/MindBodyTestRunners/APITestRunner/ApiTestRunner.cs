@@ -40,10 +40,10 @@ namespace ClassLibrary1.MindBodyTestRunners.APITestRunner
             }
         }
 
-        public  void RunAllTests()
+        public  void RunAllTests(string testName)
         {
             var testRunner = new SimpleTestRunner<ApiEnvironment>(V1path);
-            testRunner.RunAllTest();
+            testRunner.RunAllTest(testName);
         }
 
         public void RunCheckScheduleItems()

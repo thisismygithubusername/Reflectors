@@ -20,9 +20,9 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             //CompileDependencies();
         }
 
-        public void RunAllTest()
+        public void RunAllTest(string testName)
         {
-            ExecuteAllTests();
+            ExecuteAllTests( testName);
         }
 
         public Queue<ITest> TestsToRun
@@ -94,9 +94,9 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             TestsToRun.Enqueue(test);
         }
 
-        private void ExecuteAllTests()
+        private void ExecuteAllTests(string testName)
         {
-            new GallioTestRunner().RunTest(DirectoryPath);
+            new GallioTestRunner(DirectoryPath).RunSingleTest(testName);
         }
 
         private void AddTestsToQueue(IEnumerable<ITest> tests)

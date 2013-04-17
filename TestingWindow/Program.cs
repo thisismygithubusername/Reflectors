@@ -12,7 +12,7 @@ namespace TestingWindow
     {
         static void Main(string[] args)
         {
-            new ApiTestRunner().RunAllTests();
+            new ApiTestRunner().RunAllTests("TestDateControls");
             Console.ReadLine();
         }
     }

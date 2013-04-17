@@ -48,11 +48,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectiveTestRunner\AssemblySniffer.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\CrayGallioRunner.cs" />
+    <Compile Include="ReflectiveTestRunner\GallioWrappers\CustomConsole.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\GallioFilterGenerator.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\GallioInvoker.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\GallioTestLauncher.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\InitializedTestRun.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\PrimeConsole.cs" />
+    <Compile Include="ReflectiveTestRunner\GallioWrappers\recho.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\RunnerLoader.cs" />
     <Compile Include="ReflectiveTestRunner\GallioWrappers\SimpleGallioRunner.cs" />
     <Compile Include="ReflectiveTestRunner\RuntimeCompiler.cs" />
