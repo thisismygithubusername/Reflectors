@@ -74,7 +74,7 @@ namespace ClassLibrary1.ReflectiveTestRunner
         {
             RunIt();
         }
-
+        
         public void RunSingleTest( string testName)
         {
             RunDat(testName);
@@ -91,13 +91,15 @@ namespace ClassLibrary1.ReflectiveTestRunner
             AddTestFilter(testName);
             Launcher.Run();
             Launcher.TestProject.ClearTestFilters();
+            //AddTestFilter("AppointmentRatesAndBookingTimesTest");
+            //Launcher.Run();
         }
 
         private void AddTestFilter(string testName)
         {
             var filters = FilterUtils.ParseTestFilterSet(
-                new GallioFilterGenerator().GenerateSpecificTestsFilter(new List<string> {testName}));
-            Launcher.TestProject.AddTestFilter(new FilterInfo("Member: ", testName));
+                new GallioFilterGenerator().GenerateSpecificTestsFilter(new List<string> { testName, "AppointmentRatesAndBookingTimesTest"}));
+            Launcher.TestExecutionOptions.FilterSet = filters;
         }
 
         private RuntimeSetup GetInitSetup( )
@@ -137,6 +139,7 @@ namespace ClassLibrary1.ReflectiveTestRunner
             InitializeRuntimeBootStrap();
         }
 
+        
         private TestPackage TesPackage
         {
             get { return new TestPackage();}
@@ -145,7 +148,6 @@ namespace ClassLibrary1.ReflectiveTestRunner
         private void DoRandomShit(Assembly assembly)
         {
             var runner = new SampleRunner();
-            
             //ITestRunnerManager testRunnerManager = RuntimeAccessor.ServiceLocator.Resolve<ITestRunnerManager>();
             //ITestRunnerFactory testRunnerFactory = testRunnerManager.GetFactory(consolidatedTestProject.TestRunnerFactoryName);
             //ITestRunner runner = TestRunnerFactory.CreateTestRunner();

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary1.ReflectiveTestRunner
 {
+    [Serializable]
     public class AssemblySniffer
     {
         private const string Dll = ".dll";
@@ -21,10 +22,7 @@ namespace ClassLibrary1.ReflectiveTestRunner
             //PrintAssemblies(AppDomain.CurrentDomain);
         }
 
-        public AppDomain CurrentAppDomain
-        {
-            get { return AppDomain.CurrentDomain; }
-        }
+        public AppDomain CurrentAppDomain { get; set; }
 
         public void Sniff()
         {
@@ -54,6 +52,23 @@ namespace ClassLibrary1.ReflectiveTestRunner
         public string MainAssemblyDll
         {
             get; set;
+        }
+
+        public string MainAssemblyName
+        {
+            get { return GetMainAssemblyName(); }
+        }
+
+        private string GetMainAssemblyName()
+        {
+            var split = MainAssemblyDll.Split('.');
+            var name = "";
+
+            for (var i = 0; i < split.Count()-1; i++)
+            {
+                name += split[i];
+            }
+            return name;
         }
 
         public Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)

@@ -23,18 +23,25 @@ namespace ClassLibrary1.Reflectors
             return obj;
         }
 
-        public static object CreateTestFixtureInstanceWithAppdomain(AppDomain appdomain, Assembly environmentAssembly,
+        public static Type GetFixtureType(AppDomain appdomain, Assembly environmentAssembly, string fixtureClassName)
+        {
+            
+            var type = environmentAssembly.GetType(fixtureClassName);
+            
+            return type;
+        }
+
+        public static object CreateTestFixtureInstanceWithAppdomain(AppDomain appdomain, Type fixtureType, Assembly environmentAssembly,
                                                                     string fixtureClassName)
         {
-            Type type = environmentAssembly.GetType(fixtureClassName);
-            var attributes = type.CustomAttributes;
+            var attributes = fixtureType.CustomAttributes;
              
             foreach (var customAttributeData in attributes)
             {
                 Console.WriteLine(customAttributeData.AttributeType);
             }
 
-            var obj = appdomain.CreateInstanceAndUnwrap(environmentAssembly.FullName, type.FullName);
+            var obj = appdomain.CreateInstance(environmentAssembly.FullName, fixtureType.FullName);
             return obj;
         }
 

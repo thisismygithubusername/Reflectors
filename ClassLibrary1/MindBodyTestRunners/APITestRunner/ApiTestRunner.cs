@@ -40,10 +40,16 @@ namespace ClassLibrary1.MindBodyTestRunners.APITestRunner
             }
         }
 
-        public  void RunAllTests(string testName)
+        public  void RunAllTests()
         {
-            var testRunner = new SimpleTestRunner<ApiEnvironment>(V1path);
-            testRunner.RunAllTest(testName);
+            var testRunner = new SimpleTestRunner<V1Environment>(V1path);
+            /*testRunner.RunGallioTest(new MindBodyTest
+                {
+                    TestName = "TestDateControls",
+                    FixtureName = "Regression.Tests.Coverage.BusinessMode.ClassesTests"
+                });
+             */
+            testRunner.RunAllTest("TestDateControls");
         }
 
         public void RunCheckScheduleItems()

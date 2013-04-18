@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using ClassLibrary1.ReflectiveTestRunner.Reflectors;
 using ClassLibrary1.ReflectiveTestRunner.TestModules.@abstract;
 using ClassLibrary1.Reflectors;
+using Gallio.Framework.Utilities;
+using Gallio.Runtime;
+using Gallio.Runtime.ConsoleSupport;
+using Gallio.Runtime.Logging;
 
 namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 {
     public class TestReflector<T> where T : ITestEnvironment, new() 
     {
-        public TestReflector(ITest test, Assembly assembly) 
+        public TestReflector(ITest test, Assembly assembly, SimpleTestRunner<T> runner ) 
         {
             Test = test;
             EnvironmentAssembly = assembly;
@@ -18,7 +23,14 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             TestOuputHijacker = new StringWriter();
             SetupHijacker = new StringWriter();
             TearDownHijacker = new StringWriter();
+            Runner = runner;
+            FixtureTypes = Runner.FixtureCache;
         }
+
+        public SimpleTestRunner<T> Runner
+        {
+            get; set;
+        } 
 
         public Assembly EnvironmentAssembly
         {
@@ -40,6 +52,24 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
             return TryRunTest();
         }
 
+        public void RunSomeTest()
+        {
+            const string GallioDirectory = @"C:\Program Files\Gallio\bin\";
+            var runner = new SampleRunner();
+            var setup = new Gallio.Runtime.RuntimeSetup();
+            setup.AddPluginDirectory(GallioDirectory);
+            runner.AddAssembly(EnvironmentAssembly);
+            var logger = CreateLogger();
+            RuntimeBootstrap.Initialize(setup, logger);
+            runner.AddMethod(FixtureType, Test.TestName);
+            runner.Run();
+        }
+
+        private ILogger CreateLogger()
+        {
+            return new RichConsoleLogger(NativeConsole.Instance);
+
+        }
         private TestRun TryRunTest()
         {
             return RedirectOutputToSetupHijacker()
@@ -55,8 +85,18 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
                 .RedirectOutputToConsole()
                 .PackageTestRun();
         }
-       
+        private Type FixtureType
+        {
+            get {
+                return FixtureTypes.ContainsKey(Test.FixtureName) ? FixtureTypes[Test.FixtureName] : GetTypeAndCache();
+            }
+        }
 
+        private Type GetTypeAndCache()
+        {
+            FixtureTypes[Test.FixtureName] = EnvironmentReflector.GetFixtureType(Runner.TestDomain,EnvironmentAssembly, Test.FixtureName);
+            return FixtureTypes[Test.FixtureName];
+        }
         private TestReflector<T> RedirectOutputToTestHijacker()
         {
             Console.SetOut(TestOuputHijacker);
@@ -84,7 +124,10 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private TestReflector<T> CreateTestFixtureInstance()
         {
-            TestFixtureInstance = EnvironmentReflector.CreateTestFixtureInstanceWithAppdomain(AppDomain.CurrentDomain, EnvironmentAssembly, Test.FixtureName);
+            TestFixtureInstance = EnvironmentReflector.CreateTestFixtureInstanceWithAppdomain(Runner.TestDomain,
+                                                                                              FixtureType,
+                                                                                              EnvironmentAssembly,
+                                                                                              Test.FixtureName);
             return this;
         }
 
@@ -154,9 +197,10 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private void LoadInstanceTypes()
         {
-            EnvironmentReflector.CreateTestFixtureInstanceWithAppdomain(AppDomain.CurrentDomain, EnvironmentAssembly, Test.FixtureName);
+            //EnvironmentReflector.CreateTestFixtureInstanceWithAppdomain(AppDomain.CurrentDomain, EnvironmentAssembly, Test.FixtureName);
         }
 
+        private Dictionary<string, Type> FixtureTypes { get; set; }  
         private object TestFixtureInstance { get; set; }
         private Tuple<string, Exception> PostTestInfo { get; set; }
         private string StolenTestOutput { get; set; }
