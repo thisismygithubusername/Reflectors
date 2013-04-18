@@ -71,6 +71,7 @@
     <Compile Include="MindBodyTestRunners\V2TestRunner\V2TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="GallioTestRunner\Utils\" />
     <Folder Include="MindBodyTestRunners\V1TestRunner\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
