@@ -43,36 +43,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MindBodyTestRunners\APITestRunner\ApiEnvironment.cs" />
-    <Compile Include="MindBodyTestRunners\APITestRunner\ApiTestRunner.cs" />
+    <Compile Include="GallioTestRunner\Runners\SimpleGallioRunner.cs" />
+    <Compile Include="GallioTestRunner\TestModels\GallioTestRun.cs" />
+    <Compile Include="GallioTestRunner\TestModels\TestRun.cs" />
+    <Compile Include="GallioTestRunner\Utils\DefaultTestAssemblyPaths.cs" />
+    <Compile Include="GallioTestRunner\Utils\FilterGenerators\FixtureFilterGenerator.cs" />
+    <Compile Include="GallioTestRunner\Utils\FilterGenerators\GallioFilterGenerator.cs" />
+    <Compile Include="GallioTestRunner\Utils\FilterGenerators\SpecificTestsGenerator.cs" />
+    <Compile Include="GallioTestRunner\Utils\FilterGenerators\SpecificTestsInFixtureGenerator.cs" />
+    <Compile Include="GallioTestRunner\Utils\TestDataTransformer.cs" />
+    <Compile Include="Deprecated\MindBodyTestRunners\APITestRunner\ApiEnvironment.cs" />
+    <Compile Include="Deprecated\MindBodyTestRunners\APITestRunner\ApiTestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReflectiveTestRunner\AssemblySniffer.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\CrayGallioRunner.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\CustomConsole.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\GallioFilterGenerator.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\GallioInvoker.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\GallioTestLauncher.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\InitializedTestRun.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\PrimeConsole.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\recho.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\RunnerLoader.cs" />
-    <Compile Include="ReflectiveTestRunner\GallioWrappers\SimpleGallioRunner.cs" />
-    <Compile Include="ReflectiveTestRunner\RuntimeCompiler.cs" />
-    <Compile Include="ReflectiveTestRunner\TestModules\abstract\ITest.cs" />
-    <Compile Include="ReflectiveTestRunner\TestModules\SimpleTestRunner.cs" />
-    <Compile Include="ReflectiveTestRunner\TestModules\abstract\ITestRunner.cs" />
-    <Compile Include="ReflectiveTestRunner\TestModules\TestRun.cs" />
-    <Compile Include="ReflectiveTestRunner\Reflectors\BaseReflector.cs" />
-    <Compile Include="ReflectiveTestRunner\Reflectors\EnvironmentReflector.cs" />
-    <Compile Include="ReflectiveTestRunner\TestModules\abstract\ITestEnvironment.cs" />
-    <Compile Include="ReflectiveTestRunner\TestModules\TestReflector.cs" />
-    <Compile Include="MindBodyTestRunners\MindBodyTest.cs" />
-    <Compile Include="MindBodyTestRunners\V2TestRunner\V2Environment.cs" />
-    <Compile Include="MindBodyTestRunners\V2TestRunner\V2TestRunner.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\AssemblySniffer.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\CrayGallioRunner.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\CustomConsole.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\GallioInvoker.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\GallioTestLauncher.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\InitializedTestRun.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\PrimeConsole.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\recho.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\RunnerLoader.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\GallioWrappers\SimplerGallioRunner.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\RuntimeCompiler.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\TestModules\abstract\ITest.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\TestModules\SimpleTestRunner.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\TestModules\abstract\ITestRunner.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\TestModules\TestRun.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\Reflectors\BaseReflector.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\Reflectors\EnvironmentReflector.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\TestModules\abstract\ITestEnvironment.cs" />
+    <Compile Include="Deprecated\ReflectiveTestRunner\TestModules\TestReflector.cs" />
+    <Compile Include="MindBodyTest.cs" />
+    <Compile Include="Deprecated\MindBodyTestRunners\V2TestRunner\V2Environment.cs" />
+    <Compile Include="Deprecated\MindBodyTestRunners\V2TestRunner\V2TestRunner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GallioTestRunner\Utils\" />
-    <Folder Include="MindBodyTestRunners\V1TestRunner\" />
+    <Folder Include="Deprecated\MindBodyTestRunners\V1TestRunner\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

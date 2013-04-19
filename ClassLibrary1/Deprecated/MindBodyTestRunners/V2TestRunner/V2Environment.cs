@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using ClassLibrary1.ReflectiveTestRunner;
 using ClassLibrary1.ReflectiveTestRunner.TestModules.@abstract;
 
-namespace ClassLibrary1.Reflectors
+namespace ClassLibrary1.Deprecated.MindBodyTestRunners.V2TestRunner
 {
     /*
      * Create an Environment class that runs

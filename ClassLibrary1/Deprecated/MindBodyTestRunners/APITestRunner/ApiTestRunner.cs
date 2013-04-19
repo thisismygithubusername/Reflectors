@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using ClassLibrary1.ReflectiveTestRunner.Reflectors;
 using ClassLibrary1.ReflectiveTestRunner.TestModules;
 using ClassLibrary1.ReflectiveTestRunner.TestModules.@abstract;
 using ClassLibrary1.Reflectors;
 
-namespace ClassLibrary1.MindBodyTestRunners.APITestRunner
+namespace ClassLibrary1.Deprecated.MindBodyTestRunners.APITestRunner
 {
     public class ApiTestRunner
     {

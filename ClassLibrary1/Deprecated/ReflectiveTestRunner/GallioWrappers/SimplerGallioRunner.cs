@@ -20,7 +20,7 @@ using Gallio.Runtime.Logging;
 
 namespace ClassLibrary1.ReflectiveTestRunner.GallioWrappers
 {
-    public class SimpleGallioRunner
+    public class SimplerGallioRunner
     {
         private readonly TestPackage testPackage;
         private readonly List<Filter<ITestDescriptor>> filters;
@@ -30,7 +30,7 @@ namespace ClassLibrary1.ReflectiveTestRunner.GallioWrappers
         /// <summary>
         /// Creates a sample runner.
         /// </summary>
-        public SimpleGallioRunner()
+        public SimplerGallioRunner()
         {
             testPackage = new TestPackage();
             filters = new List<Filter<ITestDescriptor>>();

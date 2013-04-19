@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ClassLibrary1.GallioTestRunner.Runners;
 using ClassLibrary1.ReflectiveTestRunner.TestModules.@abstract;
 using ClassLibrary1.Reflectors;
 using Gallio.Runtime.ConsoleSupport;
@@ -135,7 +136,7 @@ namespace ClassLibrary1.ReflectiveTestRunner.TestModules
 
         private void ExecuteAllTests(string testName)
         {
-            new GallioTestRunner(DirectoryPath).RunSingleTest(testName);
+            new SimpleGallioRunner(DirectoryPath).RunSingleTest(testName);
         }
 
         private void AddTestsToQueue(IEnumerable<ITest> tests)

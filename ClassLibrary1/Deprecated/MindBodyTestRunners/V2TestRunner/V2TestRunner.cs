@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
-using ClassLibrary1.ReflectiveTestRunner.TestModules;
-using ClassLibrary1.Reflectors;
 
-namespace ClassLibrary1.MindBodyTestRunners.V2TestRunner
+namespace ClassLibrary1.Deprecated.MindBodyTestRunners.V2TestRunner
 {
     public class V2TestRunner
     {
